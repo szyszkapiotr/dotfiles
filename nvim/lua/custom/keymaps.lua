@@ -53,7 +53,11 @@ vim.keymap.set("n", "<C-A-Right>", "<C-w>L", { desc = "Move window to the right"
 vim.keymap.set("n", "<C-A-Down>", "<C-w>J", { desc = "Move window to the lower" })
 vim.keymap.set("n", "<C-A-Up>", "<C-w>K", { desc = "Move window to the upper" })
 
--- vim.keymap.map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
--- vim.keymap.map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
--- vim.keymap.set("n", "'", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
--- vim.keymap.set("n", ";", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+-- Resize vertical tabs
+vim.keymap.set("n", "<A-;>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
+vim.keymap.set("n", "<A-'>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+
+-- Jumps with ctrl + up/down
+
+vim.keymap.set("n", "<C-Up>", "<C-u>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-Down>", "<C-d>", { noremap = true, silent = true })
