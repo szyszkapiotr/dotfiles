@@ -1,0 +1,27 @@
+# Ignore everything
+*
+
+# Allow directories so Git can traverse
+!*/
+
+# Whitelist selected configs
+!nvim/
+!nvim/**
+
+!easyeffects/
+!easyeffects/**
+
+!kitty/
+!kitty/**
+
+!quickshell/
+!quickshell/**
+
+!fish/
+!fish/**
+
+!hypr/
+!hypr/**
+
+!solaar/
+!solaar/**

@@ -59,5 +59,5 @@ vim.keymap.set("n", "<A-'>", "<cmd>vertical resize +2<cr>", { desc = "Increase W
 
 -- Jumps with ctrl + up/down
 
-vim.keymap.set("n", "<C-Up>", "<C-u>", { noremap = true, silent = true })
-vim.keymap.set("n", "<C-Down>", "<C-d>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<C-Up>", "<C-u>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<C-Down>", "<C-d>", { noremap = true, silent = true })
