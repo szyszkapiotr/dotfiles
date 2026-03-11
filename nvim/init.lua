@@ -421,6 +421,35 @@ require("lazy").setup({
 				pickers = {
 					colorscheme = {
 						enable_preview = true,
+						previewer = false,
+						layout_config = {
+							height = 0.4,
+							width = 0.5,
+						},
+						attach_mappings = function(_, map)
+							local actions = require("telescope.actions")
+							local action_state = require("telescope.actions.state")
+
+							map("i", "<CR>", function(prompt_bufnr)
+								local selection = action_state.get_selected_entry()
+								local theme = selection.value
+								actions.close(prompt_bufnr)
+								vim.cmd.colorscheme(theme)
+
+								-- salva o tema no theme.json
+								local path = vim.fn.stdpath("config") .. "/theme.json"
+								local ok, file = pcall(io.open, path, "w")
+								if ok and file then
+									file:write(vim.fn.json_encode({ colorscheme = theme }))
+									file:close()
+									vim.notify("Tema salvo: " .. theme, vim.log.levels.INFO)
+								else
+									vim.notify("Erro ao salvar o tema!", vim.log.levels.ERROR)
+								end
+							end)
+
+							return true
+						end,
 					},
 				},
 				extensions = {
@@ -1051,6 +1080,23 @@ require("lazy").setup({
 			lazy = "💤 ",
 		},
 	},
+})
+
+require("core.theme")
+vim.api.nvim_create_autocmd("ColorScheme", {
+	group = vim.api.nvim_create_augroup("SaveColorscheme", { clear = true }),
+	callback = function(args)
+		local theme = args.match
+		if theme == "habamax" then
+			return
+		end -- evita salvar fallback
+		local path = vim.fn.stdpath("config") .. "/theme.json"
+		local ok, f = pcall(io.open, path, "w")
+		if ok and f then
+			f:write(vim.json.encode({ colorscheme = theme }))
+			f:close()
+		end
+	end,
 })
 -- The line beneath this is called `modeline`. See `:help modeline`
 --
