@@ -3,6 +3,7 @@ lastLoadedOutputPreset=Bass Enhancing + Perfect EQ
 
 [StreamInputs]
 inputDevice=alsa_input.pci-0000_80_1f.3.analog-stereo
+visiblePage=pluginsPage
 
 [StreamOutputs]
 mostUsedPresets=Bass Enhancing + Perfect EQ,Perfect EQ,Loudness+Autogain,Boosted,Bass Boosted
@@ -13,6 +14,7 @@ usedPresets=Advanced Auto Gain:1,Bass Boosted:1,Bass Enhancing + Perfect EQ:2,Bo
 visiblePlugin=equalizer#0
 
 [Window]
-height=509
-visiblePage=pwPage
+height=1028
+visiblePage=inputPage
+visiblePresetSheetPage=autoloadingPage
 width=949
