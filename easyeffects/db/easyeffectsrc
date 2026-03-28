@@ -6,15 +6,14 @@ inputDevice=alsa_input.pci-0000_80_1f.3.analog-stereo
 visiblePage=pluginsPage
 
 [StreamOutputs]
-mostUsedPresets=Bass Enhancing + Perfect EQ,Perfect EQ,Loudness+Autogain,Boosted,Bass Boosted
+mostUsedPresets=Bass Enhancing + Perfect EQ,Bass Enhancing + Perfect EQ - Low Latency,Bass Boosted,Loudness+Autogain,Boosted
 outputDevice=alsa_output.pci-0000_80_1f.3.analog-stereo
 plugins=equalizer#0,convolver#0
-useDefaultOutputDevice=false
-usedPresets=Advanced Auto Gain:1,Bass Boosted:1,Bass Enhancing + Perfect EQ:2,Boosted:1,Loudness+Autogain:1,Perfect EQ:1
+usedPresets=Advanced Auto Gain:4,Bass Boosted:6,Bass Enhancing + Perfect EQ:52,Boosted:4,Loudness+Autogain:5,Perfect EQ:1,Bass Enhancing + Perfect EQ - Low Latency:15,Laptop:3
+visiblePage=pluginsPage
 visiblePlugin=equalizer#0
 
 [Window]
 height=1028
-visiblePage=inputPage
-visiblePresetSheetPage=autoloadingPage
-width=949
+outputAutoloadingUsesFallback=true
+width=1908

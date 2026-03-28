@@ -61,3 +61,5 @@ vim.keymap.set("n", "<A-'>", "<cmd>vertical resize +2<cr>", { desc = "Increase W
 
 vim.keymap.set({ "n", "v" }, "<C-Up>", "<C-u>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "v" }, "<C-Down>", "<C-d>", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<space>fb", ":Telescope file_browser<CR>")
