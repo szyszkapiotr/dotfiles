@@ -31,8 +31,3 @@ if status is-interactive
         alias ssh 'kitten ssh'
     end
 end
-
-
-
-alias ekologis='cd ~/Momentum/eko-logis/repo/'
-alias grant='cd ~/Momentum/grant/sw-core-backend/'
