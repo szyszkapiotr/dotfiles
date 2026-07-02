@@ -724,7 +724,7 @@ require("lazy").setup({
 				-- clangd = {},
 				-- gopls = {},
 				-- basedpyright = {},
-				ruff = {},
+				-- ruff is configured natively in lsp/ruff.lua + vim.lsp.enable("ruff"); don't set it up via lspconfig here (double-attach).
 				-- ty = { enabled = true, autostart = true },
 
 				-- rust_analyzer = {},
@@ -769,6 +769,8 @@ require("lazy").setup({
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
+				"ruff", -- Python linter/formatter (LSP config lives in lsp/ruff.lua)
+				"ty", -- Python type checker (LSP config lives in lsp/ty.lua)
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -809,7 +811,7 @@ require("lazy").setup({
 				-- Disable "format_on_save lsp_fallback" for languages that don't
 				-- have a well standardized coding style. You can add additional
 				-- languages here or re-enable it for the disabled ones.
-				local disable_filetypes = { c = true, cpp = true, py = true }
+				local disable_filetypes = { c = true, cpp = true }
 				if disable_filetypes[vim.bo[bufnr].filetype] then
 					return nil
 				else
@@ -1184,3 +1186,6 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 require("custom.keymaps")
+
+vim.lsp.enable("ruff")
+vim.lsp.enable("ty")
