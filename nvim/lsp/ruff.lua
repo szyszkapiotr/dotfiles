@@ -20,16 +20,11 @@ return {
 			organizeImports = true,
 			showSyntaxErrors = true,
 			lineLength = 88,
-			lint = {
-				enable = true,
-				-- Uncomment to opt into unstable rules:
-				-- preview = true,
-				-- Only applied when project has no ruff config of its own:
-				-- select = { "E", "F", "I", "UP", "B", "SIM" },
-			},
-			format = {
-				-- preview = true,
-			},
+			-- lint = {
+			-- 	preview = true, -- opt into unstable rules
+			-- 	select = { "E", "F", "I", "UP", "B", "SIM" }, -- only used if project has no ruff config
+			-- },
+			-- format = { preview = true },
 			codeAction = {
 				disableRuleComment = { enable = true },
 				fixViolation = { enable = true },
