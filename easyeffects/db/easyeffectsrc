@@ -1,19 +1,19 @@
 [Presets]
-lastLoadedOutputPreset=Bass Enhancing + Perfect EQ
+lastLoadedOutputPreset=Bass Enhancing + Perfect EQ - Low Latency
 
 [StreamInputs]
 inputDevice=alsa_input.usb-KTMicro_Chu2_DSP_2020-02-20-0000-0000-0000-00.mono-fallback
 visiblePage=pluginsPage
 
 [StreamOutputs]
-mostUsedPresets=Bass Enhancing + Perfect EQ,Bass Enhancing + Perfect EQ - Low Latency,Bass Boosted,Loudness+Autogain,Boosted
+mostUsedPresets=Bass Enhancing + Perfect EQ,Bass Enhancing + Perfect EQ - Low Latency,Bass Boosted,Perfect EQ,Loudness+Autogain
 outputDevice=alsa_output.usb-KTMicro_Chu2_DSP_2020-02-20-0000-0000-0000-00.analog-stereo
-plugins=equalizer#0,convolver#0
-usedPresets=Advanced Auto Gain:10,Bass Boosted:14,Bass Enhancing + Perfect EQ:377,Boosted:10,Loudness+Autogain:10,Perfect EQ:8,Bass Enhancing + Perfect EQ - Low Latency:30,Laptop:7
+plugins=equalizer#0,convolver#0,limiter#0
+usedPresets=Advanced Auto Gain:10,Bass Boosted:16,Bass Enhancing + Perfect EQ:389,Boosted:11,Loudness+Autogain:11,Perfect EQ:11,Bass Enhancing + Perfect EQ - Low Latency:35,Laptop:7
 visiblePage=pluginsPage
 visiblePlugin=equalizer#0
 
 [Window]
 height=1028
 outputAutoloadingUsesFallback=true
-width=1908
+width=949
