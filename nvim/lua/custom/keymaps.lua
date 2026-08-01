@@ -63,3 +63,10 @@ vim.keymap.set({ "n", "v" }, "<C-Up>", "<C-u>", { noremap = true, silent = true 
 vim.keymap.set({ "n", "v" }, "<C-Down>", "<C-d>", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<space>fb", ":Telescope file_browser<CR>")
+
+-- Bookmarks
+vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksMark<cr>", { desc = "Mark current line into active BookmarkList." })
+vim.keymap.set({ "n", "v" }, "mf", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark at current active BookmarkList" })
+vim.keymap.set({ "n", "v" }, "mc", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
+vim.keymap.set({ "n", "v" }, "md", "<cmd>BookmarksDesc<cr>", { desc = "Add description to bookmark under cursor." })
+vim.keymap.set({ "n", "v" }, "ml", "<cmd>BookmarksLists<cr>", { desc = "Display available lists with bookmarks." })
