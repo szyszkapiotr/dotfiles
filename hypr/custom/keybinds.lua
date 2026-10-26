@@ -14,3 +14,4 @@ hl.bind(
 	hl.dsp.exec_cmd("~/.config/hypr/custom/scripts/claimshell.lua open"),
 	{ locked = true }
 )
+hl.bind("WIN+F1", hl.dsp.exec_cmd("~/.config/hypr/gamemode.sh"), { description = "Toggle animations/blur/etc hotkey" })

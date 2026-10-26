@@ -25,12 +25,14 @@ if status is-interactive
     alias pamcan pacman
     alias q 'qs -c ii'
     if test "$TERM" != linux
-        alias ls 'eza --icons'
+        alias ls 'eza --icons=auto'
     end
     if test "$TERM" = xterm-kitty
         alias ssh 'kitten ssh'
     end
 end
 
-alias grant='cd ~/Momentum/grant/sw-core-backend/'
-alias ekologis='cd ~/Momentum/eko-logis/repo/'
+alias cat=bat
+
+# project aliases
+source ~/.config/fish/project_aliases.fish

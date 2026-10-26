@@ -1,4 +1,5 @@
 [soe][Equalizer#0]
+inputGain=-2
 numBands=10
 
 [soe][Equalizer#0#left]

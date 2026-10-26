@@ -1,6 +1,11 @@
 ---@type vim.lsp.Config
 return {
-	cmd = { "ruff", "server" },
+	-- Prefer the project's pinned ruff (.venv) so the editor matches `just check`; fall back to Mason.
+	cmd = function(dispatchers, config)
+		local venv = config.root_dir and config.root_dir .. "/.venv/bin/ruff"
+		local exe = venv and vim.fn.executable(venv) == 1 and venv or "ruff"
+		return vim.lsp.rpc.start({ exe, "server" }, dispatchers, { cwd = config.root_dir })
+	end,
 	filetypes = { "python" },
 	root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
 	-- Ruff = linter + formatter + import sorter only. It has no type info,

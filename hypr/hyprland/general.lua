@@ -254,9 +254,10 @@ hl.animation({
 hl.config({
 	input = {
 		kb_layout = "pl",
-		numlock_by_default = true,
 		repeat_delay = 250,
 		repeat_rate = 35,
+		accel_profile = "flat",
+		force_no_accel = true,
 
 		follow_mouse = 1,
 		off_window_axis_events = 2,

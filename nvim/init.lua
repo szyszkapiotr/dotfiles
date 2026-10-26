@@ -251,6 +251,12 @@ rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+-- conform `command` resolver: project's .venv ruff first, Mason fallback.
+-- Required on call because conform is lazy-loaded.
+local function venv_ruff(self, ctx)
+	return require("conform.util").find_executable({ ".venv/bin/ruff" }, "ruff")(self, ctx)
+end
+
 require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
@@ -611,18 +617,10 @@ require("lazy").setup({
 					--  the definition of its *type*, not where it was *defined*.
 					map("gtd", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
-					-- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
-					---@param client vim.lsp.Client
-					---@param method vim.lsp.protocol.Method
-					---@param bufnr? integer some lsp support methods only in specific files
-					---@return boolean
-					local function client_supports_method(client, method, bufnr)
-						if vim.fn.has("nvim-0.11") == 1 then
-							return client:supports_method(method, bufnr)
-						else
-							return client.supports_method(method, { bufnr = bufnr })
-						end
-					end
+					-- Hover docs in a bordered, size-capped float. Press K again to jump in and scroll.
+					map("K", function()
+						vim.lsp.buf.hover({ max_width = 90, max_height = 25 })
+					end, "Hover Documentation")
 
 					-- The following two autocommands are used to highlight references of the
 					-- word under your cursor when your cursor rests there for a little while.
@@ -632,11 +630,7 @@ require("lazy").setup({
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if
 						client
-						and client_supports_method(
-							client,
-							vim.lsp.protocol.Methods.textDocument_documentHighlight,
-							event.buf
-						)
+						and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
 					then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
@@ -667,7 +661,7 @@ require("lazy").setup({
 					-- This may be unwanted, since they displace some of your code
 					if
 						client
-						and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
+						and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
 					then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
@@ -680,7 +674,7 @@ require("lazy").setup({
 			-- See :help vim.diagnostic.Opts
 			vim.diagnostic.config({
 				severity_sort = true,
-				float = { border = "rounded", source = "if_many" },
+				float = { source = "if_many" },
 				underline = { severity = vim.diagnostic.severity.ERROR },
 				signs = vim.g.have_nerd_font and {
 					text = {
@@ -693,23 +687,8 @@ require("lazy").setup({
 				virtual_text = {
 					source = "if_many",
 					spacing = 2,
-					format = function(diagnostic)
-						local diagnostic_message = {
-							[vim.diagnostic.severity.ERROR] = diagnostic.message,
-							[vim.diagnostic.severity.WARN] = diagnostic.message,
-							[vim.diagnostic.severity.INFO] = diagnostic.message,
-							[vim.diagnostic.severity.HINT] = diagnostic.message,
-						}
-						return diagnostic_message[diagnostic.severity]
-					end,
 				},
 			})
-
-			-- LSP servers and clients are able to communicate to each other what features they support.
-			--  By default, Neovim doesn't support everything that is in the LSP specification.
-			--  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
-			--  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 			-- Enable the following language servers
 			--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -724,7 +703,7 @@ require("lazy").setup({
 				-- clangd = {},
 				-- gopls = {},
 				-- basedpyright = {},
-				-- ruff is configured natively in lsp/ruff.lua + vim.lsp.enable("ruff"); don't set it up via lspconfig here (double-attach).
+				-- ruff is configured natively in after/lsp/ruff.lua + vim.lsp.enable("ruff"); don't set it up via lspconfig here (double-attach).
 				-- ty = { enabled = true, autostart = true },
 
 				-- rust_analyzer = {},
@@ -769,24 +748,17 @@ require("lazy").setup({
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
-				"ruff", -- Python linter/formatter (LSP config lives in lsp/ruff.lua)
-				"ty", -- Python type checker (LSP config lives in lsp/ty.lua)
+				"ruff", -- Python linter/formatter (LSP config lives in after/lsp/ruff.lua)
+				"ty", -- Python type checker (LSP config lives in after/lsp/ty.lua)
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
 				automatic_installation = false,
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						-- This handles overriding only values explicitly passed
-						-- by the server configuration above. Useful when disabling
-						-- certain features of an LSP (for example, turning off formatting for ts_ls)
-						-- server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
-					end,
-				},
+				-- v2 auto-enables every installed server; keep lua_ls as the only Lua LSP
+				-- (stylua still formats via conform).
+				automatic_enable = { exclude = { "emmylua_ls", "stylua" } },
 			})
 		end,
 	},
@@ -797,7 +769,7 @@ require("lazy").setup({
 		cmd = { "ConformInfo" },
 		keys = {
 			{
-				"<leader>f",
+				"<leader>F",
 				function()
 					require("conform").format({ async = true, lsp_format = "fallback" })
 				end,
@@ -821,6 +793,11 @@ require("lazy").setup({
 					}
 				end
 			end,
+			formatters = {
+				ruff_fix = { command = venv_ruff },
+				ruff_format = { command = venv_ruff },
+				ruff_organize_imports = { command = venv_ruff },
+			},
 			formatters_by_ft = {
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
@@ -871,6 +848,25 @@ require("lazy").setup({
 		opts = {
 			cmdline = {
 				enabled = true,
+				keymap = {
+					preset = "cmdline",
+					-- menu otwarte: nawigacja; zamknięte: fallback na historię
+					["<Up>"] = { "select_prev", "fallback" },
+					["<Down>"] = { "select_next", "fallback" },
+					-- oddaj lewo/prawo kursorowi
+					["<Left>"] = {},
+					["<Right>"] = {},
+				},
+				completion = {
+					menu = {
+						-- auto popup tylko dla ":" (nie dla / i ?)
+						auto_show = function()
+							return vim.fn.getcmdtype() == ":"
+						end,
+					},
+					list = { selection = { preselect = false, auto_insert = true } },
+					ghost_text = { enabled = true },
+				},
 			},
 			keymap = {
 				-- 'default' (recommended) for mappings similar to built-in completions
@@ -967,26 +963,6 @@ require("lazy").setup({
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		branch = "main",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
-		},
-		init = function()
-			-- Disable entire built-in ftplugin mappings to avoid conflicts.
-			-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
-			-- vim.g.no_plugin_maps = true
-
-			-- Or, disable per filetype (add as you like).
-			-- NOTE: these ftplugin guards use exists(), not the value, so
-			-- assigning ANY value (even false) disables the maps. To KEEP
-			-- the built-in python [[ ]] [] ][ [m ]m motions, leave unset.
-			-- vim.g.no_python_maps = true
-			-- vim.g.no_ruby_maps = true
-			-- vim.g.no_rust_maps = true
-			-- vim.g.no_go_maps = true
-		end,
-		config = function()
-			-- put your config here
-		end,
 	},
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
@@ -1185,7 +1161,11 @@ vim.g.loaded_netrwPlugin = 1
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
+-- Rounded border on every float: hover, signature help, diagnostics.
+vim.o.winborder = "rounded"
+
 require("custom.keymaps")
+require("custom.rename_undo")
 
 vim.lsp.enable("ruff")
 vim.lsp.enable("ty")

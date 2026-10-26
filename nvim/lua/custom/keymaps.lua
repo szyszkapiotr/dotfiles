@@ -22,13 +22,6 @@ vim.keymap.set("v", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set("v", "<down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 vim.keymap.set("v", "<up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
--- Operator-pending mode mappings
-vim.keymap.set("o", "j", "v:count == 0 ? 'gj' : <LeftMouse>'j'", { expr = true, silent = true })
-vim.keymap.set("o", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-
-vim.keymap.set("o", "<down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-vim.keymap.set("o", "<up", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-
 -- Prevent deleting from also copying
 vim.keymap.set({ "n", "v" }, "d", '"_d', { noremap = true })
 vim.keymap.set({ "n", "v" }, "D", '"_D', { noremap = true })
@@ -70,3 +63,6 @@ vim.keymap.set({ "n", "v" }, "mf", "<cmd>BookmarksGoto<cr>", { desc = "Go to boo
 vim.keymap.set({ "n", "v" }, "mc", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
 vim.keymap.set({ "n", "v" }, "md", "<cmd>BookmarksDesc<cr>", { desc = "Add description to bookmark under cursor." })
 vim.keymap.set({ "n", "v" }, "ml", "<cmd>BookmarksLists<cr>", { desc = "Display available lists with bookmarks." })
+
+-- Rename Undo (all buffers)
+vim.keymap.set("n", "<leader>ru", "<cmd>RenameUndo<CR>", { desc = "[R]ename [U]ndo (all buffers)" })

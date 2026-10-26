@@ -35,17 +35,18 @@ return {
 				enable = true,
 			},
 		})
-		local prev = { new_name = "", old_name = "" } -- Prevents duplicate events
-		vim.api.nvim_create_autocmd("User", {
-			pattern = "NvimTreeSetup",
+		-- :q on the last file window would leave the tree as the only window; close it so nvim exits.
+		vim.api.nvim_create_autocmd("QuitPre", {
 			callback = function()
-				local events = require("nvim-tree.api").events
-				events.subscribe(events.Event.NodeRenamed, function(data)
-					if prev.new_name ~= data.new_name or prev.old_name ~= data.old_name then
-						data = data
-						Snacks.rename.on_rename_file(data.old_name, data.new_name)
-					end
-				end)
+				if vim.bo.filetype == "NvimTree" then
+					return
+				end
+				local wins = vim.tbl_filter(function(w)
+					return vim.api.nvim_win_get_config(w).relative == ""
+				end, vim.api.nvim_list_wins())
+				if #wins == 2 and require("nvim-tree.api").tree.is_visible() then
+					require("nvim-tree.api").tree.close()
+				end
 			end,
 		})
 	end,
